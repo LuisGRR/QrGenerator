@@ -1,8 +1,21 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 const value = ref("");
 const selected = ref("L");
 const size = 300;
+
+const expression = /^(ftp|http|https):\/\/[^ "]+$/;
+
+const textoQR = computed({
+  get() {
+    return value.value;
+  },
+  set(text) {
+    if (expression.test(text)) {
+      value.value = text;
+    }
+  },
+});
 </script>
 
 <template>
@@ -13,8 +26,8 @@ const size = 300;
   <main class="contentQR">
     <div class="contentQRCpontrol">
       <label class="controlesQR">
-        <span>Texto: </span>
-        <input type="text" v-model="value" />
+        <span>URL: </span>
+        <input type="text" v-model="textoQR" />
       </label>
       <label class="controlesQR">
         <span> Level: </span>
@@ -28,7 +41,7 @@ const size = 300;
     </div>
 
     <Transition>
-      <div v-if="value">
+      <div v-if="textoQR">
         <qr-code :value="value" :size="size" :level="selected" />
       </div>
     </Transition>
@@ -44,6 +57,30 @@ const size = 300;
 h1 {
   margin: 2em 0;
   color: wheat;
+}
+
+input {
+  outline: none;
+  border: none;
+  background: transparent;
+  border-radius: 2px;
+  border-bottom: 2px solid wheat;
+  transition: 180ms all ease-in-out;
+}
+
+input:focus {
+  background: wheat;
+  border-bottom: 3px solid wheat;
+}
+
+select {
+  outline: none;
+  border: none;
+  background-color: wheat;
+  border-radius: 2px;
+}
+option {
+  background-color: wheat;
 }
 
 .contentQR {
